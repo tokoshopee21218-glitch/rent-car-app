@@ -1,0 +1,874 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RentCar Pro</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-sans,system-ui,sans-serif);background:var(--color-background-tertiary,#f5f5f0);color:var(--color-text-primary,#1a1a1a);font-size:15px;line-height:1.5;min-height:100vh}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--color-background-primary,#fff);border-right:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.15));display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:10}
+.sidebar-logo{padding:1.25rem 1rem;border-bottom:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:#1D9E75;border-radius:var(--border-radius-md,8px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0}
+.logo-text{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.logo-sub{font-size:11px;color:var(--color-text-secondary,#666)}
+.nav{flex:1;padding:0.75rem 0;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;cursor:pointer;color:var(--color-text-secondary,#666);font-size:13.5px;transition:all 0.15s;border-left:2px solid transparent;margin:0 0.25rem;border-radius:0 var(--border-radius-md,8px) var(--border-radius-md,8px) 0}
+.nav-item:hover{background:var(--color-background-secondary,#f5f5f0);color:var(--color-text-primary)}
+.nav-item.active{background:#E1F5EE;color:#0F6E56;border-left-color:#1D9E75;font-weight:500}
+.nav-item i{font-size:17px}
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--color-background-primary,#fff);border-bottom:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));padding:0.875rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+.page-title{font-size:17px;font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:0.75rem}
+.badge-btn{position:relative;cursor:pointer;padding:0.4rem 0.6rem;border-radius:var(--border-radius-md,8px);background:transparent;border:0.5px solid var(--color-border-secondary,rgba(0,0,0,0.25));color:var(--color-text-primary);display:flex;align-items:center;gap:6px;font-size:13px;font-family:inherit;transition:all 0.15s}
+.badge-btn:hover{background:var(--color-background-secondary)}
+.badge-count{position:absolute;top:-5px;right:-5px;background:#E24B4A;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:500}
+.content{padding:1.25rem 1.5rem;flex:1}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem}
+.card{background:var(--color-background-primary,#fff);border-radius:var(--border-radius-lg,12px);border:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));padding:1rem 1.25rem}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.card-title{font-size:14px;font-weight:500;color:var(--color-text-secondary)}
+.metric-card{background:var(--color-background-secondary,#f5f5f0);border-radius:var(--border-radius-md,8px);padding:0.875rem 1rem}
+.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.metric-value{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.metric-sub{font-size:11px;color:var(--color-text-tertiary,#999);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0.5rem 1rem;border-radius:var(--border-radius-md,8px);border:0.5px solid var(--color-border-secondary,rgba(0,0,0,0.25));background:transparent;color:var(--color-text-primary);font-size:13.5px;font-family:inherit;cursor:pointer;transition:all 0.15s;font-weight:400}
+.btn:hover{background:var(--color-background-secondary)}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.btn-primary:hover{background:#0F6E56;border-color:#0F6E56}
+.btn-danger{background:#E24B4A;border-color:#E24B4A;color:#fff}
+.btn-danger:hover{background:#A32D2D;border-color:#A32D2D}
+.btn-warning{background:#EF9F27;border-color:#EF9F27;color:#fff}
+.btn-warning:hover{background:#BA7517;border-color:#BA7517}
+.btn-sm{padding:0.3rem 0.75rem;font-size:12.5px}
+.form-group{margin-bottom:0.875rem}
+label{display:block;font-size:12.5px;color:var(--color-text-secondary);margin-bottom:4px;font-weight:500}
+input,select,textarea{width:100%;padding:0.5rem 0.75rem;border:0.5px solid var(--color-border-secondary,rgba(0,0,0,0.25));border-radius:var(--border-radius-md,8px);background:var(--color-background-primary,#fff);color:var(--color-text-primary);font-size:14px;font-family:inherit;outline:none;transition:border 0.15s}
+input:focus,select:focus,textarea:focus{border-color:#1D9E75;box-shadow:0 0 0 2px rgba(29,158,117,0.12)}
+textarea{resize:vertical;min-height:70px}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11.5px;font-weight:500}
+.status-aktif{background:#E1F5EE;color:#0F6E56}
+.status-tersedia{background:#EAF3DE;color:#3B6D11}
+.status-selesai{background:#F1EFE8;color:#444441}
+.status-belum-bayar{background:#FAECE7;color:#993C1D}
+.status-lunas{background:#E1F5EE;color:#085041}
+.status-balik-hari{background:#E6F1FB;color:#185FA5}
+.car-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1rem}
+.car-card{background:var(--color-background-primary,#fff);border:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));border-radius:var(--border-radius-lg,12px);padding:1rem;cursor:pointer;transition:all 0.2s;position:relative}
+.car-card:hover{border-color:#1D9E75;transform:translateY(-1px)}
+.car-card.selected{border:2px solid #1D9E75;background:#F7FEFB}
+.car-card.dipakai{border-color:#E24B4A;background:#FEF9F9}
+.car-card.dipakai:hover{border-color:#A32D2D}
+.car-icon{width:48px;height:48px;background:#E1F5EE;border-radius:var(--border-radius-md,8px);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:0.75rem;color:#0F6E56}
+.car-name{font-weight:500;font-size:14px;margin-bottom:2px}
+.car-plate{font-size:12px;color:var(--color-text-secondary);font-family:monospace;margin-bottom:6px}
+.car-price{font-size:13px;color:#0F6E56;font-weight:500}
+.car-status-dot{position:absolute;top:0.75rem;right:0.75rem;width:8px;height:8px;border-radius:50%;background:#63C76A}
+.car-status-dot.busy{background:#E24B4A}
+.car-status-dot.free{background:#63C76A}
+.table{width:100%;border-collapse:collapse;font-size:13.5px}
+.table th{text-align:left;padding:0.5rem 0.75rem;color:var(--color-text-secondary);font-weight:500;font-size:12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.table td{padding:0.6rem 0.75rem;border-bottom:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.08));vertical-align:middle}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:var(--color-background-secondary,rgba(0,0,0,0.02))}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--color-background-primary,#fff);border-radius:var(--border-radius-lg,12px);padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;border:0.5px solid var(--color-border-tertiary)}
+.modal-title{font-size:16px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+.modal-footer{display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1.25rem;padding-top:1rem;border-top:0.5px solid var(--color-border-tertiary)}
+.notif-banner{background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:var(--border-radius-md,8px);padding:0.75rem 1rem;display:flex;align-items:flex-start;gap:10px;margin-bottom:1rem}
+.notif-banner-warn{background:#FAEEDA;border-color:#FAC775}
+.notif-banner-danger{background:#FAECE7;border-color:#F5C4B3}
+.notif-icon{font-size:18px;color:#0F6E56;flex-shrink:0;margin-top:1px}
+.notif-icon.warn{color:#854F0B}
+.notif-icon.danger{color:#993C1D}
+.notif-text{font-size:13px;color:#085041}
+.notif-text.warn{color:#633806}
+.notif-text.danger{color:#712B13}
+.notif-title{font-weight:500;margin-bottom:2px}
+.alert-item{background:var(--color-background-primary);border-radius:var(--border-radius-md,8px);border:0.5px solid var(--color-border-tertiary);padding:0.75rem 1rem;margin-bottom:0.5rem;display:flex;align-items:flex-start;gap:10px}
+.tab-bar{display:flex;gap:0.25rem;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1rem;background:var(--color-background-primary);border-radius:var(--border-radius-md,8px) var(--border-radius-md,8px) 0 0;padding:0.5rem 0.75rem 0}
+.tab{padding:0.4rem 0.875rem;border-radius:var(--border-radius-md,8px) var(--border-radius-md,8px) 0 0;cursor:pointer;font-size:13px;color:var(--color-text-secondary);border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-0.5px}
+.tab.active{color:#0F6E56;border-bottom-color:#1D9E75;font-weight:500}
+.tab:hover:not(.active){color:var(--color-text-primary)}
+.section-title{font-size:15px;font-weight:500;margin-bottom:0.875rem;display:flex;align-items:center;gap:8px}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--color-text-secondary)}
+.empty-icon{font-size:40px;margin-bottom:0.5rem;opacity:0.4}
+.fuel-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:#E6F1FB;color:#185FA5;border-radius:20px;font-size:11.5px}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:0.875rem 0}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;font-size:13.5px}
+.info-label{color:var(--color-text-secondary)}
+.info-value{font-weight:500}
+.price-big{font-size:26px;font-weight:500;color:#0F6E56}
+.summary-box{background:#E1F5EE;border-radius:var(--border-radius-md,8px);padding:1rem;margin:0.75rem 0}
+.notif-badge{background:#E24B4A;color:#fff;border-radius:20px;padding:1px 6px;font-size:10.5px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="ti ti-car"></i></div>
+    <div><div class="logo-text">RentCar Pro</div><div class="logo-sub">Sistem Rental Mobil</div></div>
+  </div>
+  <nav class="nav" id="nav"></nav>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="topbar-right">
+      <span id="clock" style="font-size:13px;color:var(--color-text-secondary)"></span>
+      <button class="badge-btn" onclick="showPage('notifikasi')">
+        <i class="ti ti-bell" style="font-size:16px"></i>
+        <span id="notif-count-badge"></span>
+      </button>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+</div>
+
+<div id="modal-container"></div>
+
+<script>
+let state = {
+  mobil: [],
+  transaksi: [],
+  aktivitas: [],
+  settings: {overchargePerJam: 25000, maxKm: 200},
+  currentPage: 'dashboard'
+};
+
+function saveState() {
+  try { localStorage.setItem('rentcar_state', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const d = localStorage.getItem('rentcar_state');
+    if (d) state = JSON.parse(d);
+  } catch(e) {}
+}
+
+function rupiah(n) {
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+
+function tanggalIndo(d) {
+  const dt = new Date(d);
+  const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const bln = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  return hari[dt.getDay()] + ', ' + dt.getDate() + ' ' + bln[dt.getMonth()] + ' ' + dt.getFullYear();
+}
+
+function formatJam(d) {
+  const dt = new Date(d);
+  return dt.getHours().toString().padStart(2,'0') + ':' + dt.getMinutes().toString().padStart(2,'0');
+}
+
+function formatDateTime(d) {
+  return tanggalIndo(d) + ' ' + formatJam(d);
+}
+
+function addLog(msg, tipe='info') {
+  state.aktivitas.unshift({id:Date.now(), pesan:msg, waktu:new Date().toISOString(), tipe});
+  if (state.aktivitas.length > 100) state.aktivitas = state.aktivitas.slice(0, 100);
+  saveState();
+}
+
+function getNotifikasi() {
+  const now = new Date();
+  const esok = new Date(now); esok.setDate(esok.getDate()+1);
+  const notifs = [];
+  state.transaksi.filter(t=>t.status==='aktif').forEach(t=>{
+    const selesai = new Date(t.waktuSelesai);
+    const diff = selesai - now;
+    const diffH = diff / 36e5;
+    if (diffH <= 0) {
+      notifs.push({level:'danger', car:t.namaMobil, msg:'Mobil '+t.namaMobil+' ('+t.customer+') sudah melewati waktu kembali! ('+formatDateTime(t.waktuSelesai)+')', id:t.id});
+    } else if (diffH <= 2) {
+      notifs.push({level:'warn', car:t.namaMobil, msg:'Mobil '+t.namaMobil+' akan dikembalikan dalam '+Math.ceil(diffH)+' jam ('+formatDateTime(t.waktuSelesai)+')', id:t.id});
+    } else if (selesai.toDateString() === now.toDateString()) {
+      notifs.push({level:'info', car:t.namaMobil, msg:'Mobil '+t.namaMobil+' ('+t.customer+') kembali hari ini jam '+formatJam(t.waktuSelesai), id:t.id});
+    } else if (selesai.toDateString() === esok.toDateString()) {
+      notifs.push({level:'info', car:t.namaMobil, msg:'Mobil '+t.namaMobil+' ('+t.customer+') kembali besok jam '+formatJam(t.waktuSelesai), id:t.id});
+    }
+    if (t.statusBayar === 'belum') {
+      notifs.push({level:'warn', car:t.namaMobil, msg:'Belum bayar: '+t.customer+' ('+t.namaMobil+') – '+rupiah(t.totalHarga), id:'pay_'+t.id});
+    }
+  });
+  return notifs;
+}
+
+function updateClock() {
+  const now = new Date();
+  const day = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'][now.getDay()];
+  const bln = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'][now.getMonth()];
+  document.getElementById('clock').textContent = day + ' ' + now.getDate() + ' ' + bln + ' ' + now.getFullYear() + ' — ' + now.toTimeString().slice(0,5);
+}
+
+const pages = [
+  {id:'dashboard', label:'Dashboard', icon:'ti-layout-dashboard'},
+  {id:'mobil', label:'Data Mobil', icon:'ti-car'},
+  {id:'sewa', label:'Sewa Mobil', icon:'ti-key'},
+  {id:'transaksi', label:'Transaksi', icon:'ti-receipt'},
+  {id:'finansial', label:'Finansial', icon:'ti-chart-bar'},
+  {id:'riwayat', label:'Riwayat', icon:'ti-history'},
+  {id:'notifikasi', label:'Notifikasi', icon:'ti-bell'},
+  {id:'pengaturan', label:'Pengaturan', icon:'ti-settings'},
+];
+
+function buildNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = pages.map(p=>`
+    <div class="nav-item ${state.currentPage===p.id?'active':''}" onclick="showPage('${p.id}')">
+      <i class="ti ${p.icon}" aria-hidden="true"></i>
+      <span>${p.label}</span>
+      ${p.id==='notifikasi'?'<span id="notif-nav-count"></span>':''}
+    </div>`).join('');
+  const count = getNotifikasi().length;
+  const el = document.getElementById('notif-nav-count');
+  if (el && count>0) el.innerHTML = `<span class="notif-badge">${count}</span>`;
+  const badge = document.getElementById('notif-count-badge');
+  if (badge) { badge.innerHTML = count>0 ? `<span class="badge-count">${count}</span>` : ''; }
+}
+
+function showPage(id) {
+  state.currentPage = id;
+  buildNav();
+  document.getElementById('page-title').textContent = pages.find(p=>p.id===id)?.label || '';
+  const content = document.getElementById('content');
+  if (id==='dashboard') renderDashboard(content);
+  else if (id==='mobil') renderMobil(content);
+  else if (id==='sewa') renderSewa(content);
+  else if (id==='transaksi') renderTransaksi(content);
+  else if (id==='finansial') renderFinansial(content);
+  else if (id==='riwayat') renderRiwayat(content);
+  else if (id==='notifikasi') renderNotifikasi(content);
+  else if (id==='pengaturan') renderPengaturan(content);
+}
+
+function renderDashboard(c) {
+  const now = new Date();
+  const bulanIni = now.getMonth(); const tahunIni = now.getFullYear();
+  const today = now.toDateString();
+  const aktif = state.transaksi.filter(t=>t.status==='aktif');
+  const tersedia = state.mobil.filter(m=>!aktif.some(t=>t.mobilId===m.id));
+  const bulanTrx = state.transaksi.filter(t=>{const d=new Date(t.waktuMulai);return d.getMonth()===bulanIni&&d.getFullYear()===tahunIni});
+  const todayTrx = state.transaksi.filter(t=>new Date(t.waktuMulai).toDateString()===today);
+  const pendapatan = bulanTrx.filter(t=>t.statusBayar==='lunas').reduce((a,b)=>a+b.totalHarga,0);
+  const belumBayar = state.transaksi.filter(t=>t.statusBayar==='belum'&&t.status==='aktif');
+  const notifs = getNotifikasi();
+
+  let alertsHtml = '';
+  notifs.slice(0,3).forEach(n=>{
+    const cls = n.level==='danger'?'notif-banner-danger':n.level==='warn'?'notif-banner-warn':'';
+    const icls = n.level==='danger'?'danger':n.level==='warn'?'warn':'';
+    alertsHtml += `<div class="notif-banner ${cls}">
+      <i class="ti ti-alert-circle notif-icon ${icls}" aria-hidden="true"></i>
+      <div class="notif-text ${icls}">${n.msg}</div>
+    </div>`;
+  });
+
+  c.innerHTML = `
+  ${alertsHtml}
+  <div class="grid-4" style="margin-bottom:1rem">
+    <div class="metric-card"><div class="metric-label">Mobil Aktif Disewa</div><div class="metric-value">${aktif.length}</div><div class="metric-sub">dari ${state.mobil.length} unit</div></div>
+    <div class="metric-card"><div class="metric-label">Unit Tersedia</div><div class="metric-value" style="color:#0F6E56">${tersedia.length}</div><div class="metric-sub">siap disewa</div></div>
+    <div class="metric-card"><div class="metric-label">Transaksi Hari Ini</div><div class="metric-value">${todayTrx.length}</div><div class="metric-sub">transaksi baru</div></div>
+    <div class="metric-card"><div class="metric-label">Pendapatan Bulan Ini</div><div class="metric-value" style="color:#0F6E56;font-size:15px">${rupiah(pendapatan)}</div><div class="metric-sub">sudah terbayar</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Mobil Sedang Disewa</span><button class="btn btn-sm" onclick="showPage('sewa')"><i class="ti ti-plus"></i> Sewa Baru</button></div>
+      ${aktif.length===0?'<div class="empty-state"><div class="empty-icon"><i class="ti ti-car-off"></i></div><div>Tidak ada mobil yang sedang disewa</div></div>':
+      aktif.map(t=>`<div class="alert-item">
+        <div class="car-icon" style="width:36px;height:36px;font-size:18px;margin:0;flex-shrink:0"><i class="ti ti-car"></i></div>
+        <div style="flex:1">
+          <div style="font-weight:500;font-size:13.5px">${t.namaMobil}</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">${t.customer} · ${t.jenisRental==='balik_hari'?'Balik Hari':''+t.jumlahHari+' Hari'}</div>
+          <div style="font-size:12px;color:#993C1D;margin-top:2px"><i class="ti ti-clock" style="font-size:13px;vertical-align:-1px"></i> Kembali: ${formatDateTime(t.waktuSelesai)}</div>
+        </div>
+        <span class="status-badge ${t.statusBayar==='lunas'?'status-lunas':'status-belum-bayar'}">${t.statusBayar==='lunas'?'Lunas':'Belum Bayar'}</span>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Belum Bayar</span>${belumBayar.length>0?`<span class="notif-badge">${belumBayar.length}</span>`:''}</div>
+      ${belumBayar.length===0?'<div class="empty-state"><div class="empty-icon">✅</div><div>Semua sudah lunas</div></div>':
+      belumBayar.map(t=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:0.5px solid var(--color-border-tertiary)">
+        <div>
+          <div style="font-size:13.5px;font-weight:500">${t.customer}</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">${t.namaMobil} · ${t.jenisRental==='balik_hari'?'Balik Hari':''+t.jumlahHari+' Hari'}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:500;color:#993C1D">${rupiah(t.totalHarga)}</div>
+          <button class="btn btn-sm btn-primary" style="margin-top:4px" onclick="bayarTransaksi('${t.id}')">Tandai Lunas</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderMobil(c) {
+  const aktifIds = state.transaksi.filter(t=>t.status==='aktif').map(t=>t.mobilId);
+  c.innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <div class="section-title"><i class="ti ti-car" aria-hidden="true"></i> Daftar Armada</div>
+    <button class="btn btn-primary" onclick="modalTambahMobil()"><i class="ti ti-plus"></i> Tambah Mobil</button>
+  </div>
+  ${state.mobil.length===0?'<div class="empty-state"><div class="empty-icon"><i class="ti ti-car-off"></i></div><div style="font-weight:500;margin-bottom:4px">Belum ada mobil</div><div style="font-size:13px">Tambahkan unit mobil untuk mulai menyewakan</div></div>':
+  `<div class="car-grid">${state.mobil.map(m=>{
+    const busy = aktifIds.includes(m.id);
+    const trx = busy ? state.transaksi.find(t=>t.mobilId===m.id&&t.status==='aktif') : null;
+    return `<div class="car-card ${busy?'dipakai':''}">
+      <div class="car-status-dot ${busy?'busy':'free'}"></div>
+      <div class="car-icon"><i class="ti ti-car"></i></div>
+      <div class="car-name">${m.nama}</div>
+      <div class="car-plate">${m.plat}</div>
+      <div class="car-price">${rupiah(m.hargaSehari)}/hari</div>
+      <div class="car-price" style="font-size:11px;color:#185FA5;margin-top:2px">${rupiah(m.hargaBalikHari)}/balik hari</div>
+      ${busy?`<div style="font-size:11.5px;color:#993C1D;margin-top:6px"><i class="ti ti-user" style="font-size:13px;vertical-align:-1px"></i> ${trx.customer}<br><i class="ti ti-clock" style="font-size:13px;vertical-align:-1px"></i> Kembali ${formatJam(trx.waktuSelesai)}, ${new Date(trx.waktuSelesai).getDate()}/${new Date(trx.waktuSelesai).getMonth()+1}</div>`:''}
+      <div style="display:flex;gap:4px;margin-top:10px">
+        <button class="btn btn-sm" onclick="modalEditMobil('${m.id}')"><i class="ti ti-edit"></i></button>
+        ${!busy?`<button class="btn btn-sm btn-danger" onclick="hapusMobil('${m.id}')"><i class="ti ti-trash"></i></button>`:''}
+      </div>
+    </div>`;
+  }).join('')}</div>`}`;
+}
+
+function renderSewa(c) {
+  const aktifIds = state.transaksi.filter(t=>t.status==='aktif').map(t=>t.mobilId);
+  const tersedia = state.mobil.filter(m=>!aktifIds.includes(m.id));
+  const now = new Date();
+  const nowStr = now.toISOString().slice(0,16);
+
+  c.innerHTML = `
+  <div class="grid-2" style="gap:1.25rem">
+    <div>
+      <div class="section-title"><i class="ti ti-car" aria-hidden="true"></i> Pilih Mobil</div>
+      ${tersedia.length===0?'<div class="empty-state card"><div class="empty-icon"><i class="ti ti-car-off"></i></div><div>Semua mobil sedang disewa</div></div>':
+      `<div class="car-grid" id="car-selector">
+        ${tersedia.map(m=>`<div class="car-card" id="carsel-${m.id}" onclick="selectCar('${m.id}')">
+          <div class="car-icon"><i class="ti ti-car"></i></div>
+          <div class="car-name">${m.nama}</div>
+          <div class="car-plate">${m.plat}</div>
+          <div class="car-price">${rupiah(m.hargaSehari)}/hari</div>
+          <div class="car-price" style="font-size:11px;color:#185FA5">${rupiah(m.hargaBalikHari)}/balik hari</div>
+        </div>`).join('')}
+      </div>`}
+    </div>
+    <div class="card" id="form-sewa">
+      <div style="font-size:14px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px"><i class="ti ti-clipboard-text" aria-hidden="true"></i> Detail Penyewaan</div>
+      <div id="selected-car-info" style="display:none">
+        <div class="notif-banner" id="car-preview" style="margin-bottom:0.875rem"></div>
+      </div>
+      <div class="form-group"><label>Nama Penyewa *</label><input type="text" id="f-customer" placeholder="Nama lengkap penyewa"></div>
+      <div class="form-group"><label>Jenis Rental *</label>
+        <select id="f-jenis" onchange="updateFormSewa()">
+          <option value="harian">Harian (per hari)</option>
+          <option value="balik_hari">Balik Hari</option>
+        </select>
+      </div>
+      <div id="harian-fields">
+        <div class="form-group"><label>Waktu Mulai Pakai *</label><input type="datetime-local" id="f-mulai" value="${nowStr}"></div>
+        <div class="form-group"><label>Jumlah Hari *</label><input type="number" id="f-hari" min="1" value="1" oninput="hitungHarga()"></div>
+      </div>
+      <div id="balik-fields" style="display:none">
+        <div class="form-group"><label>Waktu Mulai Pakai *</label><input type="datetime-local" id="f-mulai-b" value="${nowStr}"></div>
+      </div>
+      <div class="form-group"><label>Bensin yang Diberikan</label>
+        <select id="f-bensin">
+          <option value="penuh">Penuh (Full Tank)</option>
+          <option value="setengah">Setengah</option>
+          <option value="seperempat">Seperempat</option>
+          <option value="kosong">Kosong</option>
+          <option value="custom">Jumlah Custom</option>
+        </select>
+      </div>
+      <div id="bensin-custom-wrap" style="display:none" class="form-group">
+        <label>Jumlah Liter Bensin</label><input type="number" id="f-bensin-liter" placeholder="Contoh: 15">
+      </div>
+      <div class="form-group"><label>Status Pembayaran</label>
+        <select id="f-bayar">
+          <option value="belum">Belum Bayar</option>
+          <option value="lunas">Lunas</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Catatan (opsional)</label><textarea id="f-catatan" placeholder="Kondisi mobil, keperluan khusus, dsb"></textarea></div>
+      <div class="summary-box" id="price-summary" style="display:none">
+        <div class="info-row"><span class="info-label">Harga per hari</span><span class="info-value" id="ps-harian">-</span></div>
+        <div class="info-row" id="ps-hari-row" style="display:none"><span class="info-label">Jumlah hari</span><span class="info-value" id="ps-hari">-</span></div>
+        <div class="info-row"><span class="info-label">Total</span><span class="info-value price-big" id="ps-total">-</span></div>
+        <div class="info-row" style="margin-top:6px;font-size:12.5px;color:#085041"><i class="ti ti-clock" style="font-size:14px;vertical-align:-2px"></i> Kembali: <span id="ps-kembali" style="margin-left:4px;font-weight:500"></span></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitSewa()" id="btn-sewa" disabled>
+        <i class="ti ti-check"></i> Konfirmasi & Sewa
+      </button>
+    </div>
+  </div>`;
+
+  document.getElementById('f-bensin').addEventListener('change',function(){
+    document.getElementById('bensin-custom-wrap').style.display = this.value==='custom'?'block':'none';
+  });
+  document.getElementById('f-mulai').addEventListener('change', hitungHarga);
+  document.getElementById('f-mulai-b').addEventListener('change', hitungHarga);
+}
+
+let selectedCarId = null;
+
+function selectCar(id) {
+  selectedCarId = id;
+  document.querySelectorAll('.car-card').forEach(el=>el.classList.remove('selected'));
+  const el = document.getElementById('carsel-'+id);
+  if (el) el.classList.add('selected');
+  const m = state.mobil.find(x=>x.id===id);
+  if (!m) return;
+  document.getElementById('selected-car-info').style.display = 'block';
+  document.getElementById('car-preview').innerHTML = `<i class="ti ti-car notif-icon" aria-hidden="true"></i><div class="notif-text"><div class="notif-title">${m.nama} — ${m.plat}</div><div>${rupiah(m.hargaSehari)}/hari · ${rupiah(m.hargaBalikHari)}/balik hari</div></div>`;
+  document.getElementById('btn-sewa').disabled = false;
+  hitungHarga();
+}
+
+function updateFormSewa() {
+  const jenis = document.getElementById('f-jenis').value;
+  document.getElementById('harian-fields').style.display = jenis==='harian'?'block':'none';
+  document.getElementById('balik-fields').style.display = jenis==='balik_hari'?'block':'none';
+  hitungHarga();
+}
+
+function hitungHarga() {
+  if (!selectedCarId) return;
+  const m = state.mobil.find(x=>x.id===selectedCarId);
+  if (!m) return;
+  const jenis = document.getElementById('f-jenis').value;
+  const sum = document.getElementById('price-summary');
+  sum.style.display = 'block';
+
+  if (jenis==='balik_hari') {
+    const mulaiEl = document.getElementById('f-mulai-b');
+    const mulai = mulaiEl ? new Date(mulaiEl.value) : new Date();
+    const selesai = new Date(mulai);
+    selesai.setHours(23,59,0,0);
+    document.getElementById('ps-harian').textContent = rupiah(m.hargaBalikHari);
+    document.getElementById('ps-hari-row').style.display = 'none';
+    document.getElementById('ps-total').textContent = rupiah(m.hargaBalikHari);
+    document.getElementById('ps-kembali').textContent = tanggalIndo(selesai)+' jam 23:59';
+  } else {
+    const hari = parseInt(document.getElementById('f-hari').value)||1;
+    const mulaiEl = document.getElementById('f-mulai');
+    const mulai = mulaiEl ? new Date(mulaiEl.value) : new Date();
+    const selesai = new Date(mulai);
+    selesai.setDate(selesai.getDate()+hari);
+    const total = m.hargaSehari * hari;
+    document.getElementById('ps-harian').textContent = rupiah(m.hargaSehari);
+    document.getElementById('ps-hari-row').style.display = 'flex';
+    document.getElementById('ps-hari').textContent = hari+' hari';
+    document.getElementById('ps-total').textContent = rupiah(total);
+    document.getElementById('ps-kembali').textContent = formatDateTime(selesai);
+  }
+}
+
+function submitSewa() {
+  if (!selectedCarId) return alert('Pilih mobil terlebih dahulu!');
+  const customer = document.getElementById('f-customer').value.trim();
+  if (!customer) return alert('Nama penyewa harus diisi!');
+  const m = state.mobil.find(x=>x.id===selectedCarId);
+  if (!m) return;
+  const jenis = document.getElementById('f-jenis').value;
+  const bensin = document.getElementById('f-bensin').value;
+  const bensinLiter = document.getElementById('f-bensin-liter').value;
+  const bayar = document.getElementById('f-bayar').value;
+  const catatan = document.getElementById('f-catatan').value;
+
+  let mulai, selesai, totalHarga, jumlahHari;
+
+  if (jenis==='balik_hari') {
+    mulai = new Date(document.getElementById('f-mulai-b').value);
+    selesai = new Date(mulai);
+    selesai.setHours(23,59,0,0);
+    totalHarga = m.hargaBalikHari;
+    jumlahHari = 'balik hari';
+  } else {
+    jumlahHari = parseInt(document.getElementById('f-hari').value)||1;
+    mulai = new Date(document.getElementById('f-mulai').value);
+    selesai = new Date(mulai);
+    selesai.setDate(selesai.getDate()+jumlahHari);
+    totalHarga = m.hargaSehari * jumlahHari;
+  }
+
+  const id = 'trx_'+Date.now();
+  const trx = {
+    id, mobilId:m.id, namaMobil:m.nama+' ('+m.plat+')',
+    customer, jenisRental:jenis,
+    jumlahHari: jenis==='balik_hari'?1:jumlahHari,
+    waktuMulai:mulai.toISOString(), waktuSelesai:selesai.toISOString(),
+    totalHarga, statusBayar:bayar, status:'aktif',
+    bensin: bensin==='custom'?bensinLiter+'L':bensin,
+    catatan, createdAt:new Date().toISOString()
+  };
+  state.transaksi.push(trx);
+  addLog('🚗 '+customer+' menyewa '+m.nama+' ('+m.plat+') — '+rupiah(totalHarga)+' — mulai '+formatDateTime(mulai));
+  saveState();
+  selectedCarId = null;
+  const konfirmMsg = `✅ Sewa berhasil!\n\n${customer} menyewa ${m.nama}\nWaktu mulai: ${formatDateTime(mulai)}\nWaktu kembali: ${formatDateTime(selesai)}\nTotal: ${rupiah(totalHarga)}\nBensin: ${trx.bensin}`;
+  alert(konfirmMsg);
+  showPage('dashboard');
+}
+
+function renderTransaksi(c) {
+  const aktif = state.transaksi.filter(t=>t.status==='aktif');
+  const selesai = state.transaksi.filter(t=>t.status==='selesai');
+
+  c.innerHTML = `
+  <div class="tab-bar">
+    <div class="tab active" id="tab-aktif" onclick="switchTab('aktif')">Aktif <span class="notif-badge" style="margin-left:4px">${aktif.length}</span></div>
+    <div class="tab" id="tab-selesai" onclick="switchTab('selesai')">Selesai (${selesai.length})</div>
+    <div class="tab" id="tab-belum" onclick="switchTab('belum')">Belum Bayar <span class="notif-badge" style="margin-left:4px">${state.transaksi.filter(t=>t.statusBayar==='belum').length}</span></div>
+  </div>
+  <div class="card" id="tab-content"></div>`;
+
+  renderTabTransaksi('aktif');
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  renderTabTransaksi(tab);
+}
+
+function renderTabTransaksi(tab) {
+  let data;
+  if (tab==='aktif') data = state.transaksi.filter(t=>t.status==='aktif');
+  else if (tab==='selesai') data = state.transaksi.filter(t=>t.status==='selesai');
+  else data = state.transaksi.filter(t=>t.statusBayar==='belum');
+
+  const tc = document.getElementById('tab-content');
+  if (!tc) return;
+  if (data.length===0) { tc.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div>Tidak ada transaksi</div></div>'; return; }
+
+  tc.innerHTML = `<div style="overflow-x:auto"><table class="table">
+    <thead><tr><th>Mobil</th><th>Penyewa</th><th>Jenis</th><th>Mulai</th><th>Kembali</th><th>Total</th><th>Bensin</th><th>Bayar</th><th>Aksi</th></tr></thead>
+    <tbody>${data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(t=>`<tr>
+      <td><div style="font-weight:500;font-size:13px">${t.namaMobil}</div></td>
+      <td style="font-size:13px">${t.customer}</td>
+      <td><span class="status-badge ${t.jenisRental==='balik_hari'?'status-balik-hari':'status-aktif'}">${t.jenisRental==='balik_hari'?'Balik Hari':''+t.jumlahHari+' Hari'}</span></td>
+      <td style="font-size:12px">${formatDateTime(t.waktuMulai)}</td>
+      <td style="font-size:12px;color:${t.status==='aktif'?'#993C1D':'inherit'}">${formatDateTime(t.waktuSelesai)}</td>
+      <td style="font-weight:500;font-size:13px;color:#0F6E56">${rupiah(t.totalHarga)}</td>
+      <td><span class="fuel-badge"><i class="ti ti-gas-station" style="font-size:12px"></i>${t.bensin}</span></td>
+      <td><span class="status-badge ${t.statusBayar==='lunas'?'status-lunas':'status-belum-bayar'}">${t.statusBayar==='lunas'?'Lunas':'Belum Bayar'}</span></td>
+      <td style="white-space:nowrap">
+        ${t.statusBayar==='belum'?`<button class="btn btn-sm btn-primary" onclick="bayarTransaksi('${t.id}')">Lunas</button>`:''}
+        ${t.status==='aktif'?`<button class="btn btn-sm" style="margin-left:4px" onclick="selesaiTransaksi('${t.id}')"><i class="ti ti-flag-check"></i> Selesai</button>`:''}
+      </td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function bayarTransaksi(id) {
+  const t = state.transaksi.find(x=>x.id===id);
+  if (!t) return;
+  t.statusBayar = 'lunas';
+  addLog('💰 Pembayaran diterima dari '+t.customer+' untuk '+t.namaMobil+' — '+rupiah(t.totalHarga));
+  saveState();
+  showPage(state.currentPage);
+}
+
+function selesaiTransaksi(id) {
+  const t = state.transaksi.find(x=>x.id===id);
+  if (!t) return;
+  const extra = prompt('Kelebihan jam (masukkan angka jam, atau 0 jika tidak ada):','0');
+  const extraJam = parseInt(extra)||0;
+  let totalFinal = t.totalHarga;
+  if (extraJam>0) {
+    const tambahan = extraJam * state.settings.overchargePerJam;
+    totalFinal += tambahan;
+    addLog('⏰ Kelebihan '+extraJam+' jam untuk '+t.customer+' — tambahan '+rupiah(tambahan));
+    t.totalHarga = totalFinal;
+    t.kelebihanJam = extraJam;
+  }
+  t.status = 'selesai';
+  t.waktuKembali = new Date().toISOString();
+  const m = state.mobil.find(x=>x.id===t.mobilId);
+  addLog('✅ '+t.customer+' mengembalikan '+t.namaMobil+(extraJam>0?' (+'+extraJam+' jam kelebihan)':'')+' — Total: '+rupiah(totalFinal));
+  saveState();
+  showPage(state.currentPage);
+}
+
+function renderFinansial(c) {
+  const now = new Date();
+  const bulanIni = now.getMonth(); const tahunIni = now.getFullYear();
+  const hariIni = now.toDateString();
+
+  const trxBulan = state.transaksi.filter(t=>{const d=new Date(t.createdAt);return d.getMonth()===bulanIni&&d.getFullYear()===tahunIni});
+  const trxHari = state.transaksi.filter(t=>new Date(t.createdAt).toDateString()===hariIni);
+  const pendapatanBulan = trxBulan.filter(t=>t.statusBayar==='lunas').reduce((a,b)=>a+b.totalHarga,0);
+  const pendapatanHari = trxHari.filter(t=>t.statusBayar==='lunas').reduce((a,b)=>a+b.totalHarga,0);
+  const totalAll = state.transaksi.filter(t=>t.statusBayar==='lunas').reduce((a,b)=>a+b.totalHarga,0);
+  const piutang = state.transaksi.filter(t=>t.statusBayar==='belum').reduce((a,b)=>a+b.totalHarga,0);
+  const mobilKeluarBulan = new Set(trxBulan.map(t=>t.mobilId)).size;
+  const mobilKeluarHari = new Set(trxHari.map(t=>t.mobilId)).size;
+
+  const bln = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  const byBulan = [];
+  for (let i=0;i<6;i++) {
+    const m = (bulanIni-i+12)%12;
+    const y = bulanIni-i<0?tahunIni-1:tahunIni;
+    const trxB = state.transaksi.filter(t=>{const d=new Date(t.createdAt);return d.getMonth()===m&&d.getFullYear()===y});
+    byBulan.unshift({label:bln[m],pendapatan:trxB.filter(t=>t.statusBayar==='lunas').reduce((a,b)=>a+b.totalHarga,0),jumlah:trxB.length});
+  }
+
+  const maxP = Math.max(...byBulan.map(b=>b.pendapatan),1);
+
+  c.innerHTML = `
+  <div class="grid-4" style="margin-bottom:1.25rem">
+    <div class="metric-card"><div class="metric-label">Pendapatan Hari Ini</div><div class="metric-value" style="font-size:18px;color:#0F6E56">${rupiah(pendapatanHari)}</div><div class="metric-sub">${trxHari.length} transaksi</div></div>
+    <div class="metric-card"><div class="metric-label">Pendapatan Bulan Ini</div><div class="metric-value" style="font-size:17px;color:#0F6E56">${rupiah(pendapatanBulan)}</div><div class="metric-sub">${trxBulan.length} transaksi</div></div>
+    <div class="metric-card"><div class="metric-label">Total Pendapatan</div><div class="metric-value" style="font-size:16px">${rupiah(totalAll)}</div><div class="metric-sub">semua waktu</div></div>
+    <div class="metric-card"><div class="metric-label">Piutang (Belum Bayar)</div><div class="metric-value" style="font-size:16px;color:#993C1D">${rupiah(piutang)}</div><div class="metric-sub">perlu ditagih</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Pendapatan 6 Bulan Terakhir</span></div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:160px;padding-top:1rem">
+        ${byBulan.map(b=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="font-size:10px;color:var(--color-text-secondary);text-align:center">${b.jumlah}x</div>
+          <div style="width:100%;background:#1D9E75;border-radius:4px 4px 0 0;height:${Math.max(8,Math.round(b.pendapatan/maxP*110))}px;min-height:4px"></div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">${b.label}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Unit Keluar</span></div>
+      <div class="info-row"><span class="info-label">Hari ini</span><span class="info-value">${mobilKeluarHari} unit</span></div>
+      <div class="info-row"><span class="info-label">Bulan ini</span><span class="info-value">${mobilKeluarBulan} unit</span></div>
+      <div class="info-row"><span class="info-label">Total transaksi bulan ini</span><span class="info-value">${trxBulan.length}</span></div>
+      <hr class="divider">
+      <div class="card-title" style="margin-bottom:0.5rem">Rincian Bulan Ini</div>
+      ${trxBulan.length===0?'<div style="color:var(--color-text-secondary);font-size:13px">Belum ada transaksi</div>':
+      trxBulan.slice(0,5).map(t=>`<div class="info-row">
+        <span class="info-label" style="font-size:12.5px">${t.customer} · ${t.namaMobil}</span>
+        <span class="info-value" style="font-size:12.5px;color:#0F6E56">${rupiah(t.totalHarga)}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderRiwayat(c) {
+  const sortedTrx = [...state.transaksi].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  c.innerHTML = `
+  <div class="grid-2" style="gap:1.25rem">
+    <div>
+      <div class="section-title"><i class="ti ti-history" aria-hidden="true"></i> Riwayat Transaksi</div>
+      ${sortedTrx.length===0?'<div class="empty-state card"><div class="empty-icon">📋</div><div>Belum ada riwayat</div></div>':
+      sortedTrx.map(t=>`<div class="alert-item" style="margin-bottom:0.5rem">
+        <div style="flex:1">
+          <div style="font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:6px">
+            ${t.customer}
+            <span class="status-badge ${t.status==='aktif'?'status-aktif':'status-selesai'}">${t.status==='aktif'?'Aktif':'Selesai'}</span>
+          </div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-top:2px">${t.namaMobil} · ${t.jenisRental==='balik_hari'?'Balik Hari':''+t.jumlahHari+' Hari'}</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">${formatDateTime(t.createdAt)}</div>
+          ${t.catatan?`<div style="font-size:12px;color:var(--color-text-tertiary,#999);margin-top:2px">📝 ${t.catatan}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:500;color:#0F6E56">${rupiah(t.totalHarga)}</div>
+          <span class="status-badge ${t.statusBayar==='lunas'?'status-lunas':'status-belum-bayar'}">${t.statusBayar==='lunas'?'Lunas':'Belum Bayar'}</span>
+          ${t.kelebihanJam?`<div style="font-size:11px;color:#854F0B;margin-top:2px">+${t.kelebihanJam} jam</div>`:''}
+        </div>
+      </div>`).join('')}
+    </div>
+    <div>
+      <div class="section-title"><i class="ti ti-activity" aria-hidden="true"></i> Log Aktivitas</div>
+      ${state.aktivitas.length===0?'<div class="empty-state card"><div class="empty-icon">📝</div><div>Belum ada aktivitas</div></div>':
+      state.aktivitas.map(a=>`<div style="padding:0.5rem 0.75rem;background:var(--color-background-primary);border-radius:var(--border-radius-md,8px);border:0.5px solid var(--color-border-tertiary);margin-bottom:0.375rem">
+        <div style="font-size:13px">${a.pesan}</div>
+        <div style="font-size:11px;color:var(--color-text-secondary);margin-top:2px">${formatDateTime(a.waktu)}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderNotifikasi(c) {
+  const notifs = getNotifikasi();
+  c.innerHTML = `
+  <div class="section-title"><i class="ti ti-bell" aria-hidden="true"></i> Notifikasi & Peringatan</div>
+  ${notifs.length===0?'<div class="empty-state card"><div class="empty-icon">🔔</div><div style="font-weight:500;margin-bottom:4px">Semua aman!</div><div style="font-size:13px">Tidak ada notifikasi saat ini</div></div>':
+  notifs.map(n=>{
+    const cls = n.level==='danger'?'notif-banner-danger':n.level==='warn'?'notif-banner-warn':'';
+    const icls = n.level==='danger'?'danger':n.level==='warn'?'warn':'';
+    const icn = n.level==='danger'?'ti-alert-triangle':'ti-clock';
+    return `<div class="notif-banner ${cls}" style="margin-bottom:0.5rem">
+      <i class="ti ${icn} notif-icon ${icls}" aria-hidden="true"></i>
+      <div class="notif-text ${icls}">${n.msg}</div>
+    </div>`;
+  }).join('')}
+  <div class="section-title" style="margin-top:1.5rem"><i class="ti ti-car-off" aria-hidden="true"></i> Mobil yang Akan Kembali</div>
+  ${state.transaksi.filter(t=>t.status==='aktif').length===0?'<div style="color:var(--color-text-secondary);font-size:13px">Tidak ada mobil yang sedang disewa.</div>':
+  state.transaksi.filter(t=>t.status==='aktif').sort((a,b)=>new Date(a.waktuSelesai)-new Date(b.waktuSelesai)).map(t=>{
+    const now = new Date(); const sel = new Date(t.waktuSelesai);
+    const diff = sel-now; const diffH = Math.round(diff/36e5);
+    const cls = diff<0?'status-belum-bayar':diffH<=2?'status-belum-bayar':diffH<=24?'status-balik-hari':'status-tersedia';
+    return `<div class="alert-item" style="margin-bottom:0.5rem">
+      <div class="car-icon" style="width:36px;height:36px;font-size:18px;margin:0;flex-shrink:0"><i class="ti ti-car"></i></div>
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:13.5px">${t.namaMobil}</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">${t.customer}</div>
+        <div style="font-size:12.5px;margin-top:3px"><span class="status-badge ${cls}">${diff<0?'Terlambat!':diffH<=1?'< 1 jam lagi':diffH+'j lagi'}</span> Kembali: ${formatDateTime(t.waktuSelesai)}</div>
+      </div>
+      ${t.statusBayar==='belum'?`<button class="btn btn-sm btn-primary" onclick="bayarTransaksi('${t.id}')">Lunas</button>`:'<span class="status-badge status-lunas">Lunas</span>'}
+    </div>`;
+  }).join('')}`;
+}
+
+function renderPengaturan(c) {
+  c.innerHTML = `
+  <div class="grid-2" style="gap:1.25rem">
+    <div>
+      <div class="section-title"><i class="ti ti-adjustments" aria-hidden="true"></i> Pengaturan Tarif</div>
+      <div class="card">
+        <div class="form-group"><label>Tarif Kelebihan Jam (per jam)</label>
+          <input type="number" id="s-overchrg" value="${state.settings.overchargePerJam}" placeholder="25000">
+          <div style="font-size:11.5px;color:var(--color-text-secondary);margin-top:3px">Dikenakan jika penyewa melebihi waktu sewa</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()"><i class="ti ti-check"></i> Simpan Pengaturan</button>
+      </div>
+      <div class="section-title" style="margin-top:1.25rem"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Zona Berbahaya</div>
+      <div class="card">
+        <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:0.75rem">Hapus semua data riwayat transaksi (data mobil tetap ada)</div>
+        <button class="btn btn-danger" onclick="hapusRiwayat()"><i class="ti ti-trash"></i> Hapus Riwayat Transaksi</button>
+      </div>
+    </div>
+    <div>
+      <div class="section-title"><i class="ti ti-info-circle" aria-hidden="true"></i> Informasi Sistem</div>
+      <div class="card">
+        <div class="info-row"><span class="info-label">Total Mobil</span><span class="info-value">${state.mobil.length} unit</span></div>
+        <div class="info-row"><span class="info-label">Total Transaksi</span><span class="info-value">${state.transaksi.length}</span></div>
+        <div class="info-row"><span class="info-label">Log Aktivitas</span><span class="info-value">${state.aktivitas.length}</span></div>
+        <div class="info-row"><span class="info-label">Tarif Kelebihan Jam</span><span class="info-value">${rupiah(state.settings.overchargePerJam)}/jam</span></div>
+        <hr class="divider">
+        <div style="font-size:12px;color:var(--color-text-secondary)">Versi: RentCar Pro v1.0<br>Data tersimpan di browser lokal</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function saveSettings() {
+  state.settings.overchargePerJam = parseInt(document.getElementById('s-overchrg').value)||25000;
+  addLog('⚙️ Pengaturan diperbarui — tarif kelebihan jam: '+rupiah(state.settings.overchargePerJam));
+  saveState();
+  alert('Pengaturan berhasil disimpan!');
+}
+
+function hapusRiwayat() {
+  if (!confirm('Yakin ingin menghapus semua riwayat transaksi? Tindakan ini tidak bisa dibatalkan.')) return;
+  state.transaksi = [];
+  state.aktivitas = [];
+  addLog('🗑️ Riwayat transaksi dihapus');
+  saveState();
+  showPage('pengaturan');
+}
+
+function modalTambahMobil() {
+  const mc = document.getElementById('modal-container');
+  mc.innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-title"><i class="ti ti-car-suv" aria-hidden="true"></i> Tambah Mobil Baru</div>
+      <div class="form-group"><label>Nama/Tipe Mobil *</label><input type="text" id="m-nama" placeholder="Contoh: Toyota Avanza, Honda Brio"></div>
+      <div class="form-group"><label>Plat Nomor *</label><input type="text" id="m-plat" placeholder="Contoh: B 1234 XYZ" style="text-transform:uppercase"></div>
+      <div class="form-group"><label>Harga Sewa Per Hari (Rp) *</label><input type="number" id="m-harga" placeholder="300000" min="0"></div>
+      <div class="form-group"><label>Harga Balik Hari (Rp) *</label><input type="number" id="m-harga-balik" placeholder="150000" min="0">
+        <div style="font-size:11.5px;color:var(--color-text-secondary);margin-top:3px">Tarif khusus untuk penyewaan dalam satu hari (balik di hari yang sama)</div>
+      </div>
+      <div class="form-group"><label>Catatan Mobil (opsional)</label><textarea id="m-catatan" placeholder="Warna, kondisi, atau info lainnya"></textarea></div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal()">Batal</button>
+        <button class="btn btn-primary" onclick="simpanMobil()"><i class="ti ti-check"></i> Tambah Mobil</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function modalEditMobil(id) {
+  const m = state.mobil.find(x=>x.id===id);
+  if (!m) return;
+  const mc = document.getElementById('modal-container');
+  mc.innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-title"><i class="ti ti-edit" aria-hidden="true"></i> Edit Mobil</div>
+      <input type="hidden" id="m-id-edit" value="${id}">
+      <div class="form-group"><label>Nama/Tipe Mobil *</label><input type="text" id="m-nama" value="${m.nama}" placeholder="Toyota Avanza"></div>
+      <div class="form-group"><label>Plat Nomor *</label><input type="text" id="m-plat" value="${m.plat}" placeholder="B 1234 XYZ" style="text-transform:uppercase"></div>
+      <div class="form-group"><label>Harga Sewa Per Hari (Rp) *</label><input type="number" id="m-harga" value="${m.hargaSehari}" min="0"></div>
+      <div class="form-group"><label>Harga Balik Hari (Rp) *</label><input type="number" id="m-harga-balik" value="${m.hargaBalikHari}" min="0"></div>
+      <div class="form-group"><label>Catatan Mobil (opsional)</label><textarea id="m-catatan">${m.catatan||''}</textarea></div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal()">Batal</button>
+        <button class="btn btn-primary" onclick="simpanEditMobil()"><i class="ti ti-check"></i> Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function simpanMobil() {
+  const nama = document.getElementById('m-nama').value.trim();
+  const plat = document.getElementById('m-plat').value.trim().toUpperCase();
+  const harga = parseInt(document.getElementById('m-harga').value)||0;
+  const hargaBalik = parseInt(document.getElementById('m-harga-balik').value)||0;
+  const catatan = document.getElementById('m-catatan').value;
+  if (!nama||!plat||!harga) return alert('Nama, plat, dan harga harus diisi!');
+  if (state.mobil.some(m=>m.plat===plat)) return alert('Plat nomor sudah terdaftar!');
+  const id = 'mob_'+Date.now();
+  state.mobil.push({id, nama, plat, hargaSehari:harga, hargaBalikHari:hargaBalik, catatan, createdAt:new Date().toISOString()});
+  addLog('🚗 Mobil baru ditambahkan: '+nama+' ('+plat+') — '+rupiah(harga)+'/hari');
+  saveState(); closeModal(); showPage('mobil');
+}
+
+function simpanEditMobil() {
+  const id = document.getElementById('m-id-edit').value;
+  const m = state.mobil.find(x=>x.id===id);
+  if (!m) return;
+  const nama = document.getElementById('m-nama').value.trim();
+  const plat = document.getElementById('m-plat').value.trim().toUpperCase();
+  const harga = parseInt(document.getElementById('m-harga').value)||0;
+  const hargaBalik = parseInt(document.getElementById('m-harga-balik').value)||0;
+  if (!nama||!plat||!harga) return alert('Isi semua field yang wajib!');
+  m.nama=nama; m.plat=plat; m.hargaSehari=harga; m.hargaBalikHari=hargaBalik;
+  m.catatan=document.getElementById('m-catatan').value;
+  addLog('✏️ Data mobil diperbarui: '+nama+' ('+plat+')');
+  saveState(); closeModal(); showPage('mobil');
+}
+
+function hapusMobil(id) {
+  const m = state.mobil.find(x=>x.id===id);
+  if (!m) return;
+  if (!confirm('Hapus mobil '+m.nama+' ('+m.plat+')?')) return;
+  state.mobil = state.mobil.filter(x=>x.id!==id);
+  addLog('🗑️ Mobil dihapus: '+m.nama+' ('+m.plat+')');
+  saveState(); showPage('mobil');
+}
+
+function closeModal() {
+  document.getElementById('modal-container').innerHTML = '';
+}
+
+loadState();
+buildNav();
+showPage('dashboard');
+updateClock();
+setInterval(updateClock, 1000);
+setInterval(()=>{
+  buildNav();
+  if (state.currentPage==='notifikasi') showPage('notifikasi');
+  if (state.currentPage==='dashboard') showPage('dashboard');
+}, 60000);
+</script>
+</body>
+</html>
